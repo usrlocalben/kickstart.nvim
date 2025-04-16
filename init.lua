@@ -160,6 +160,10 @@ vim.opt.scrolloff = 10
 vim.opt.number = false
 vim.opt.wrap = false
 
+vim.keymap.set({ 'v', 'x' }, '<C-Insert>', '"+y')
+vim.keymap.set('n', '<S-Insert>', '"+p')
+vim.keymap.set('i', '<S-Insert>', '<Esc>"+pi')
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -177,12 +181,6 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
-
--- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -837,6 +835,16 @@ require('lazy').setup({
           { name = 'luasnip' },
           { name = 'path' },
         },
+      }
+    end,
+  },
+
+  {
+    'ggml-org/llama.vim',
+    init = function()
+      vim.g.llama_config = {
+        endpoint = 'http://qwen.nt.rqdq.lan:8080/infill',
+        keymap_accept_full = '<C-S>',
       }
     end,
   },
