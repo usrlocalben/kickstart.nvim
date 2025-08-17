@@ -114,9 +114,9 @@ vim.o.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.schedule(function()
-  vim.o.clipboard = 'unnamedplus'
-end)
+-- vim.schedule(function()
+--   vim.o.clipboard = 'unnamedplus'
+-- end)
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -129,7 +129,7 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- Keep signcolumn on by default
-vim.o.signcolumn = 'yes'
+-- vim.o.signcolumn = 'yes'
 
 -- Decrease update time
 vim.o.updatetime = 250
@@ -166,6 +166,13 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+vim.o.number = false
+vim.o.wrap = false
+
+vim.keymap.set({ 'v', 'x' }, '<C-Insert>', '"+y')
+vim.keymap.set('n', '<S-Insert>', '"+p')
+vim.keymap.set('i', '<S-Insert>', '<Esc>"+pi')
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -196,14 +203,18 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  See `:help wincmd` for a list of all window commands
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+-- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+
+-- flip buffers with ctrl j/k
+vim.keymap.set('n', '<C-j>', ':bp<Return>', { desc = 'Prev buffer' })
+vim.keymap.set('n', '<C-k>', ':bn<Return>', { desc = 'Next buffer' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -876,25 +887,61 @@ require('lazy').setup({
     },
   },
 
+  {
+    'ggml-org/llama.vim',
+    init = function()
+      vim.g.llama_config = {
+        endpoint = 'http://qwen.nt.rqdq.lan:8080/infill',
+        keymap_accept_word = '<C-B>',
+        keymap_accept_line = '<S-Tab>',
+        keymap_accept_full = '<C-S>',
+      }
+    end,
+  },
+
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    -- 'folke/tokyonight.nvim',
+    'loctvl842/monokai-pro.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
+      -- ---@diagnostic disable-next-line: missing-fields
+      -- require('tokyonight').setup {
+      --   styles = {
+      --     comments = { italic = false }, -- Disable italics in comments
+      --   },
+      -- }
 
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      -- vim.cmd.colorscheme 'tokyonight-night'
+
+      -- You can configure highlights by doing something like:
+      vim.cmd.hi 'Comment gui=none'
+
+      require('monokai-pro').setup {
+
+        -- override = function()
+        --   return {
+        --     Normal = { bg = '#000000' },
+        --   }
+        -- end,
+
+        overrideScheme = function(cs, p, config, hp)
+          local cs_override = {}
+          local calc_bg = hp.blend(p.background, 0.50, '#000000')
+
+          cs_override.editor = {
+            background = calc_bg,
+          }
+          return cs_override
+        end,
+      }
+      vim.cmd.colorscheme 'monokai-pro-machine'
     end,
   },
 
