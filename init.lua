@@ -897,6 +897,24 @@ require('lazy').setup({
     end,
   },
 
+  -- {
+  --   'ledger/vim-ledger',
+  --   init = function()
+  --     vim.g.ledger_bin = 'hledger'
+  --     vim.g.ledger_date_format = '%Y-%m-%d'
+  --   end,
+  -- },
+
+  {
+    'tpope/vim-sleuth',
+    init = function() end,
+  },
+
+  {
+    'farmergreg/vim-lastplace',
+    init = function() end,
+  },
+
   {
     'ggml-org/llama.vim',
     init = function()
