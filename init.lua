@@ -173,6 +173,9 @@ vim.keymap.set({ 'v', 'x' }, '<C-Insert>', '"+y')
 vim.keymap.set('n', '<S-Insert>', '"+p')
 vim.keymap.set('i', '<S-Insert>', '<Esc>"+pi')
 
+-- disables F9 so that we can use it with the recorder (MisterWhisper)
+vim.keymap.set({ 'v', 'x', 'n', 'i' }, '<F9>', '<nop>')
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -888,13 +891,20 @@ require('lazy').setup({
   },
 
   {
+    'mkropat/vim-ezguifont',
+    init = function()
+      vim.g.ezguifont = 'Iosevka:h11'
+    end,
+  },
+
+  {
     'ggml-org/llama.vim',
     init = function()
       vim.g.llama_config = {
-        endpoint = 'http://qwen.nt.rqdq.lan:8080/infill',
-        keymap_accept_word = '<C-B>',
-        keymap_accept_line = '<S-Tab>',
-        keymap_accept_full = '<C-S>',
+        endpoint_fim = 'http://fim.svc.rqdq.lan:8080/infill',
+        keymap_fim_accept_word = '<C-B>',
+        keymap_fim_accept_line = '<S-Tab>',
+        keymap_fim_accept_full = '<C-S>',
       }
     end,
   },
@@ -1059,5 +1069,8 @@ require('lazy').setup({
   },
 })
 
+vim.keymap.set('n', '<C-+>', ':IncreaseFont<CR>')
+vim.keymap.set('n', '<C-=>', ':IncreaseFont<CR>')
+vim.keymap.set('n', '<C-->', ':DecreaseFont<CR>')
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
